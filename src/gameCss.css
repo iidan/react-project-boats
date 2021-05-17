@@ -103,11 +103,10 @@
     font-family: Arial;
     color: #BF7F00;
     padding: 15px;
-    position: absolute;
 }
 
 .cardSize {
-    width: 270px;
+    max-width: 265px;
 }
 .card:hover {
     box-shadow: 0 0 11px rgba(33,33,33,.2);
@@ -118,6 +117,11 @@
     float: right;
 }
 
+.cardPricePos{
+    padding-top: 5px;
+    float: left;
+}
+
 .ReactCollapse--collapse {
     max-width: 1800px;
     border: 1px solid rgba(3, 169, 244, 0);
@@ -126,18 +130,6 @@
 }
 
 .cardButtonSize{
-    width: 270px;
+    width: 265px;
     height: 26px;
-}
-.parent {
-    display: flex;
-    flex-wrap: wrap;
-    margin-top: -10px;
-    margin-left: -10px;
-}
-
-.child{
-    width: calc(25% - 10px);
-    margin-left: 10px;
-    margin-top: 10px;
 }
