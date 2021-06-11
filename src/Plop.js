@@ -37,12 +37,12 @@ class Plop extends Component {
                                 </div>
 
                                 <div className="pedlTop4">
-                                    <div className="cardPricePos gold">{card.price}</div>
+                                    <div className="cardPricePos gold">${card.price}</div>
                                     <img src={ps4Icon} className="iconImgPos"/>
                                 </div>
 
                                 <div className="card-content">
-                                    <p style={{padding: '3px;'}}>{card.shortMessage}</p>
+                                    <p style={{padding: '3px;', color:'black'}}>{card.shortMessage}</p>
                                 </div>
 
                                 <Accordion.Toggle as={Button} eventKey="1" className="btn btn-primary btn-circle cardButtonSize">
