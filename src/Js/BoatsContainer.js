@@ -34,9 +34,7 @@ class BoatsContainer extends Component {
                     </div>
                 </div>
                 <div className="my-custom-scrollbar">
-                    <table>
-                        <Boat/>
-                    </table>
+                    <Boat/>
                 </div>
             </div>
         );

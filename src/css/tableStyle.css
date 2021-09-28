@@ -13,3 +13,12 @@ td, th {
 tr:nth-child(even) {
     background-color: #dddddd;
 }
+
+.selectStyle {
+    margin-bottom: 10px;
+    padding: 5px;
+    maxWidth: 300;
+}
+.padl5{
+    padding: 5px;
+}
