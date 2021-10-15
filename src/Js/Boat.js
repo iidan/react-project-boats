@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, {Component, useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 
@@ -10,10 +10,21 @@ const Boats = (props) => {
     const [max, setMax] = useState(0);
     const [min, setMin] = useState(0);
     const [pageSize, setPageSize] = useState(3);
-    const [type, setType]: any = useState('');
+    const [type, setType]: any = useState('model.year');
+    const [pageSizeInit, pageSizeInitSet] = useState([1, 3, 5]);
+    const [sortByInit] = useState({
+        id: 'id',
+        name: 'name',
+        shipyardName: 'shipyard.name',
+        country: 'shipyard.country',
+        model: 'model.model',
+        year: 'model.year',
+        size: 'size',
+        type: 'type'
+    });
 
     useEffect(async () => {
-        getPages();
+        getPages(pageCount, type, pageSize);
     }, []);
 
     const isMinPage = (value) => {
@@ -35,7 +46,7 @@ const Boats = (props) => {
         return number
     }
 
-    const getPages = (value = 0, sort = 'id') => {
+    const getPages = (value, sort, size) => {
         let number = getCurrentPage(pageCount + value);
         setPageCount(number);
         axios.get("http://localhost:9090/loadBoats", {
@@ -44,27 +55,32 @@ const Boats = (props) => {
             },
             params: {
                 page: number,
-                size: pageSize,
+                size: size,
                 sort: sort
             }
         })
             .then(res => {
-                setMax(res.data.totalBoats);
-                boats(res.data.boats);
+                setMax(res.data.pageSize - 1);
+                boats(res.data.taxReportList);
             });
     }
 
     const next = () => {
-        getPages(1, type);
+        getPages(1, type, pageSize);
     };
 
     const previous = () => {
-        getPages(-1, type);
+        getPages(-1, type, pageSize);
     };
 
     const sortBy = (sort) => {
         setType(sort);
-        getPages(pageCount, sort);
+        getPages(pageCount, sort, pageSize);
+    };
+
+    const setNewPageSize = (size) => {
+        setPageSize(size);
+        getPages(pageCount, type, size);
     };
 
     return (
@@ -87,20 +103,31 @@ const Boats = (props) => {
                 <ul className="nav nav-pills padl5">
                     <li className="nav-item">
                         <Form.Group controlId="formBasicSelect">
+                            <Form.Label>Select sort by</Form.Label>
                             <Form.Control
                                 as="select"
                                 value={type}
                                 onChange={e => {
                                     sortBy(e.target.value);
                                 }}>
-                                <option value="id">id</option>
-                                <option value="name">name</option>
-                                <option value="shipyard.name">shipyardName</option>
-                                <option value="shipyard.country">country</option>
-                                <option value="model.model">model</option>
-                                <option value="model.year">year</option>
-                                <option value="size">size</option>
-                                <option value="type">type</option>
+                                {Object.keys(sortByInit).map(key => (
+                                    (<option value={sortByInit[key]}>{key}</option>)
+                                ))}
+                            </Form.Control>
+                        </Form.Group>
+                    </li>
+                    <li className="nav-item">
+                        <Form.Group controlId="formBasicSelect2">
+                            <Form.Label>page size</Form.Label>
+                            <Form.Control
+                                as="select"
+                                value={pageSize}
+                                onChange={e => {
+                                    setNewPageSize(e.target.value);
+                                }}>
+                                {pageSizeInit.map((page, index) => {
+                                    return (<option value={page}>{page}</option>)
+                                })}
                             </Form.Control>
                         </Form.Group>
                     </li>
