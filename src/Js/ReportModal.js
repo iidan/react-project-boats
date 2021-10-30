@@ -19,7 +19,6 @@ class ReportModal extends Component {
     }
 
     handleChange(evt) {
-        debugger;
         const value = evt.target.value;
         this.setState({
             [evt.target.name]: value
@@ -40,6 +39,7 @@ class ReportModal extends Component {
             .then(function (response) {
                 //handle success
                 console.log(response);
+                window.location = '/';
             })
             .catch(function (response) {
                 //handle error
@@ -69,7 +69,7 @@ class ReportModal extends Component {
                                id="userId"/>
 
                         <Modal.Footer>
-                            <Button onClick={() => this.closeModal()} variant="secondary">Close</Button>
+                            <Button onClick={this.props.onHide} variant="secondary">Close</Button>
                             <Button type="submit" className="btn btn-success">Create</Button>
                         </Modal.Footer>
                     </form>

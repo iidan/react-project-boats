@@ -1,5 +1,5 @@
 import React, {Component, useState} from 'react';
-import {Button, Navbar, Nav, NavItem, NavDropdown, Collapse, Form, FormControl} from 'react-bootstrap';
+import {Button} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from "axios";
 import Modal from "react-bootstrap/Modal";
@@ -13,12 +13,11 @@ class AssignTaskModal extends Component {
         this.state = {
             dueDate: new Date(),
             assignDate: new Date(),
-            id: "",
+            employeeId: "",
             task: ""
         };
         this.handleChange = this.handleChange.bind(this);
         this.onFormSubmit = this.onFormSubmit.bind(this);
-        this.setId = this.setId.bind(this);
         this.taskChange = this.taskChange.bind(this);
     }
 
@@ -30,26 +29,18 @@ class AssignTaskModal extends Component {
         this.setState({dueDate: event});
     }
 
-    closeModal(value) {
-        this.setState({
-            id: false
-        });
-    }
-
-    setId() {
-        this.setState({
-            visible: false
-        });
-    }
-
     onFormSubmit(e) {
-        debugger;
-        this.state.id = document.getElementById("userId").value;
-        e.preventDefault();
+        this.state.employeeId = document.getElementById("userId").value;
         const assignTaskDto = this.state;
         axios.post("http://localhost:9789/create-new-assign-task", assignTaskDto)
-            .then(res => {
+            .then(function (response) {
+                //handle success
+                console.log(response);
                 window.location = '/';
+            })
+            .catch(function (response) {
+                //handle error
+                console.log(response);
             });
     }
 
@@ -62,7 +53,6 @@ class AssignTaskModal extends Component {
                 centered
                 {...this.props}
                 show={this.props.show}
-                visible={this.state.visible}
             >
                 <Modal.Header closeButton>
                     <Modal.Title id="contained-modal-title-vcenter">
@@ -73,7 +63,8 @@ class AssignTaskModal extends Component {
                     <form onSubmit={this.onFormSubmit}>
                         <label>Task : </label>
                         <input type="text" className="form-control" id="task" onChange={this.taskChange}/>
-                        <input type="text" value={this.props.employeeinfo.id} hidden={true} className="form-control" id="userId"/>
+                        <input type="text" value={this.props.employeeinfo.id} hidden={true} className="form-control"
+                               id="userId"/>
                         <label htmlFor="usr">Due Date :</label>
 
                         <div className="form-group">
@@ -85,7 +76,7 @@ class AssignTaskModal extends Component {
                             />
                         </div>
                         <Modal.Footer>
-                            <Button onClick={() => this.closeModal()} variant="secondary">Close</Button>
+                            <Button onClick={this.props.onHide} variant="secondary">Close</Button>
                             <Button type="submit" className="btn btn-success">Create</Button>
                         </Modal.Footer>
                     </form>

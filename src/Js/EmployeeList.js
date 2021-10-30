@@ -2,14 +2,12 @@ import axios from "axios";
 import React, {useState, useEffect} from 'react';
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import Modal from "react-bootstrap/Modal";
-import ReportModal from "./ReportModal";
-import AssignTaskModal from "./AssignTaskModal";
 import EmployeeDetailsWindow from "./EmployeeDetailsWindow";
 
 const Employees = (props) => {
 
     const [employee, employeeList] = useState([]);
+    const [manager, setManager] = useState([]);
     const [pageCount, setPageCount] = useState(0);
     const [max, setMax] = useState(0);
     const [min, setMin] = useState(0);
@@ -64,6 +62,20 @@ const Employees = (props) => {
             });
     };
 
+    const getManager = (employeeId) => {
+        axios.get("http://localhost:9789/get-my-direct-manager", {
+            headers: {
+                "Accept": "application/json",
+            },
+            params: {
+                myEmployeeId: employeeId
+            }
+        })
+            .then(res => {
+                setManager(res.data);
+            });
+    };
+
     const next = () => {
         getPages(1, type, pageSize);
     };
@@ -86,17 +98,22 @@ const Employees = (props) => {
     const handleShow = (employee) => {
         setShow(true);
         setEmployeeInfo(employee);
-    }
-    const handleClose = () => {setShow(false);};
+        getManager(employee.id);
+    };
+
+    const handleClose = () => {
+        setShow(false);
+    };
     const [employeeInfo, setEmployeeInfo] = useState("");
 
     return (
         <div className="center">
             <h2>Employee List</h2>
             <table>
+                <tbody>
                 {employee.map((employee, index) => {
                     return (
-                        <tr className="col-sm">
+                        <tr key={index} id={index} className="col-sm">
                             <td>{employee.firstName}</td>
                             <td>{employee.lastName}</td>
                             <td>{employee.position}</td>
@@ -105,6 +122,7 @@ const Employees = (props) => {
                             </td>
                         </tr>)
                 })}
+                </tbody>
             </table>
             <div className="row">
                 <div className="col">
@@ -119,7 +137,7 @@ const Employees = (props) => {
                                         setNewPageSize(e.target.value);
                                     }}>
                                     {pageSizeInit.map((page, index) => {
-                                        return (<option value={page}>{page}</option>)
+                                        return (<option key={index} value={page}>{page}</option>)
                                     })}
                                 </Form.Control>
                             </Form.Group>
@@ -140,7 +158,8 @@ const Employees = (props) => {
                 show={show}
                 onHide={() => handleClose(false)}
                 employeeinfo={employeeInfo}
-                assigntasklist={employeeInfo.assignTaskList}
+                employeelist={employee}
+                mangerlist={manager}
             />
         </div>
     )

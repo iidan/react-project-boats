@@ -1,48 +1,37 @@
 import React, {Component, useState} from 'react';
-import {Button, Navbar, Nav, NavItem, NavDropdown, Collapse, Form, FormControl} from 'react-bootstrap';
+import {Button} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import axios from "axios";
 import Modal from "react-bootstrap/Modal";
 import ReportModal from "./ReportModal";
 import AssignTaskModal from "./AssignTaskModal";
-import DatePicker from "react-datepicker";
+import axios from "axios";
 
 class EmployeeDetailsWindow extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            show2: false,
-            show3: false,
-            assigntasklist: [],
-            oneTime: true
+            showReport: false,
+            showAssignTask: false,
+            subordinate: [],
+            employeeType: "manager",
+            myEmployeeId: ''
         };
-
-        this.handleShow2 = this.handleShow2.bind(this);
-        this.handleShow3 = this.handleShow3.bind(this);
-        this.handleShow4 = this.handleShow4.bind(this);
-
+        this.handleShowReport = this.handleShowReport.bind(this);
+        this.handleShowAssignTask = this.handleShowAssignTask.bind(this);
     }
 
-    handleShow2() {
+    handleShowReport(val) {
         this.setState({
-            show2: true
+            showReport: val
         })
     }
 
-    handleShow3() {
+    handleShowAssignTask(val, subordinate) {
         this.setState({
-            show3: true
-        })
-    }
-
-    handleShow4(value) {
-        if (value != undefined && this.props.oneTime) {
-            this.setState({
-                assigntasklist: value,
-                oneTime: false
-            });
-        }
+            subordinate: subordinate != undefined ? subordinate : '',
+            showAssignTask: val
+        });
     }
 
     render() {
@@ -54,6 +43,7 @@ class EmployeeDetailsWindow extends Component {
                     {...this.props}
                     onHide={this.props.onHide}
                 >
+                    {this.state.myEmployeeId = this.props.employeeinfo.id}
                     <Modal.Header closeButton>
                         <Modal.Title>Modal heading</Modal.Title>
                     </Modal.Header>
@@ -75,70 +65,82 @@ class EmployeeDetailsWindow extends Component {
                                     <div className="col"></div>
                                 </div>
                                 <hr></hr>
+                                {this.props.mangerlist != "" &&
                                 <div className="row">
                                     <div className="col"><label>Manager :</label></div>
-                                    <div className="col"><label>David</label></div>
                                     <div className="col">
-                                        <button onClick={this.handleShow2}
+                                        <label>{this.props.mangerlist.firstName} {this.props.mangerlist.lastName}</label>
+                                    </div>
+                                    <div className="col">
+                                        <button onClick={() => this.handleShowReport(true)}
                                                 className="btn btn-primary">Report
                                         </button>
                                     </div>
                                 </div>
+                                }
                             </div>
                         </div>
                         <label>My Tasks:</label>
+                        <table>
+                            <thead>
+                            <tr>
+                                <th width="28%">task</th>
+                                <th width="28%">Assign Date</th>
+                                <th width="30%">Due Date</th>
+                            </tr>
+                            </thead>
+                        </table>
+                        <table/>
                         <div className="my-modal">
                             <table>
-                                <thead>
-                                <tr>
-                                    <th scope="col">task</th>
-                                    <th scope="col">Assign Date</th>
-                                    <th scope="col">Due Date</th>
-                                </tr>
-                                </thead>
                                 <tbody>
-                                {this.props.assigntasklist != undefined &&
-                                this.props.assigntasklist.map(employee => {
+                                {this.props.employeeinfo.assignTaskList != undefined &&
+                                this.props.employeeinfo.assignTaskList.map(employee => {
                                     return (
-                                        <tr className="col-sm">
+                                        <tr key={employee.id} className="col-sm">
                                             <td>{employee.task}</td>
                                             <td>{employee.assignDate}</td>
                                             <td>{employee.dueDate}</td>
                                         </tr>)
-                                })
-                                }
+                                })}
                                 </tbody>
                             </table>
                         </div>
-                        <label>My Subordinates:</label>
-                        <ul className="my-modal border">
-                            <div className="container-fluid">
-                                <div className="row">
-                                    <div className="col"><label>David</label></div>
-                                    <div className="col"><label>Moshe</label></div>
-                                    <div className="col"><label>Manager</label></div>
-                                    <div className="col">
-                                        <button onClick={this.handleShow3} type="submit"
-                                                className="btn btn-primary">Assign
-                                            Task
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </ul>
-                        {this.props.employeeinfo.position == "manager" &&
+                        <br></br>
+                        {this.props.employeeinfo.position == this.state.employeeType &&
                         <div>
-                            <label>My List Reports:</label>
-                            <ul className="my-modal border">
-                                <div className="container-fluid">
-                                    <div className="row">
-                                        <div className="col-sm-2"><label>David</label></div>
-                                        <div className="col-sm-2"><label>Moshe</label></div>
-                                        <div className="col-sm-4"><label>12 /12/2021</label></div>
-                                        <div className="col-sm-4"><label>Manager hello to you</label></div>
-                                    </div>
-                                </div>
-                            </ul>
+                            <label>My Subordinates:</label>
+                            <div className="my-modal">
+                                <table>
+                                    <thead>
+                                    <tr>
+                                        <th width="25%">First Name</th>
+                                        <th width="25%">Last Name</th>
+                                        <th width="25%">Position</th>
+                                        <th width="25%">Assign Task to</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {this.props.employeelist.map(employee => {
+                                        if (employee.id > this.props.employeeinfo.id) {
+                                            return (
+                                                <tr key={employee.id} className="col-sm">
+                                                    <td>{employee.firstName}</td>
+                                                    <td>{employee.lastName}</td>
+                                                    <td>{employee.position}</td>
+                                                    <td>
+                                                        <button
+                                                            onClick={() => this.handleShowAssignTask(true, employee)}
+                                                            type="submit"
+                                                            className="btn btn-primary">Assign Task
+                                                        </button>
+                                                    </td>
+                                                </tr>)
+                                        }
+                                    })}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                         }
                     </Modal.Body>
@@ -150,12 +152,15 @@ class EmployeeDetailsWindow extends Component {
                 </Modal>
 
                 <ReportModal
-                    show={this.state.show2}
-                    employeeinfo={this.props.employeeinfo}
+                    show={this.state.showReport}
+                    employeeinfo={this.props.mangerlist}
+                    onHide={() => this.handleShowReport(false)}
                 />
+
                 <AssignTaskModal
-                    show={this.state.show3}
-                    employeeinfo={this.props.employeeinfo}
+                    show={this.state.showAssignTask}
+                    employeeinfo={this.state.subordinate}
+                    onHide={() => this.handleShowAssignTask(false)}
                 />
 
             </div>
