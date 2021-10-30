@@ -1,5 +1,4 @@
 table {
-    font-family: arial, sans-serif;
     border-collapse: collapse;
     width: 100%;
 }
@@ -10,15 +9,42 @@ td, th {
     padding: 8px;
 }
 
-tr:nth-child(even) {
-    background-color: #dddddd;
+/*tr:nth-child(even) {*/
+/*    background-color: #dddddd;*/
+/*}*/
+
+.pad5 {
+    padding: 5px;
 }
 
-.selectStyle {
-    margin-bottom: 10px;
-    padding: 5px;
-    maxWidth: 300;
+.center {
+    margin: auto;
+    width: 50%;
+    padding: 10px;
 }
-.padl5{
-    padding: 5px;
+
+.buttonView {
+    padding: 5px 34px;
+}
+
+.tdViewButton {
+    text-align: center;
+}
+
+.my-modal {
+    height: 150px;
+    overflow-y: scroll;
+}
+
+info-modal .modal-content {
+    background: #FF8C0A;
+}
+
+.pagingButtons {
+    padding: 30px 10px;
+}
+
+.main-modal {
+    max-height: 700px;
+    overflow-y: scroll;
 }

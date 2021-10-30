@@ -3,23 +3,19 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import './css/tableStyle.css'
-import NewCard from "./Js/NewBoat";
 import mainBoatImage from "./Files/bg.jpg";
-import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
-import BoatsContainer from "./Js/BoatsContainer";
+import {BrowserRouter as Router, Route} from 'react-router-dom';
+import EmployeesContainer from "./Js/EmployeesContainer";
 
 function App() {
     return (
         <Router>
             <div className="App">
-                <div className="head-text">
+                    <div className="head-text">
                     <div className="head-image">
                         <img src={mainBoatImage} className="imageBgBox"/>
                     </div>
-                    <Switch>
-                        <Route path="/" exact component={BoatsContainer}/>
-                        <Route path="/new" component={NewCard}/>
-                    </Switch>
+                    <Route path="/" exact component={EmployeesContainer}/>
                 </div>
             </div>
         </Router>
